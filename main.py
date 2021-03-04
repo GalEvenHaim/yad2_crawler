@@ -8,15 +8,29 @@ import time
 from apartment import *
 from sheet import *
 import sys
+import argparse
+
+city_dict = {"Givataym":"6300", "Tel Aviv": "5000" , "Ramat Gan": "8600"}
 user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36'
-SEARCH_LINK = "https://www.yad2.co.il/realestate/forsale?city=6300&property=5,1,3,6,7&rooms=4-5&price=1500000-2700000&priceOnly=1&imgOnly=1"
+#SEARCH_LINK = "https://www.yad2.co.il/realestate/forsale?city=6300&property=5,1,3,6,7&rooms=4-5&price=1500000-2700000&priceOnly=1&imgOnly=1"
 ITEM = 'https://www.yad2.co.il/item/'
 op = webdriver.ChromeOptions()
 op.add_argument('--headless')
 op.add_argument(f'user-agent={user_agent}')
 op.add_argument('window-size=1200x600')
 apartment_set = set()
+parser = argparse.ArgumentParser(description="a program to search for appartments in yad_2 according to given city, number of rooms and price range")
+parser.add_argument("-c","--city", default="Givataym", type=str, choices=["Givataym", "Tel Aviv", "Ramat Gan"], help="choose between Givataym, Tel Aviv, and Ramat Gan")
+parser.add_argument("--min_rooms", default="4", type=str)
+parser.add_argument("-r", "--max_rooms", default="5", type=str)
+parser.add_argument("-p", "--max_price", default="2750000", type=str)
+parser.add_argument("-s", "--min_sqr", default="90", type=str)
 
+args = parser.parse_args()
+SEARCH_LINK = f"https://www.yad2.co.il/realestate/forsale?city={city_dict[args.city]}" \
+              f"&rooms={args.min_rooms}-{args.max_rooms}&price=-1-{args.max_price}&parking=1&elevator=1&squaremeter={args.min_sqr}--1"
+
+a=5
 def get_apartments_item_index(driver: webdriver):
 
     res = []
