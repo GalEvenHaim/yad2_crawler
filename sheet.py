@@ -21,5 +21,4 @@ def set_to_sheet(apartment_set):
     for i in range(len(lst)):
         l1.append(lst[i].get_all())
     sheet.insert_rows(l1, 2)
-    a=5
 
