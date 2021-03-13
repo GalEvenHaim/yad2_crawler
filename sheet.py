@@ -11,12 +11,16 @@ client = gspread.authorize(creds)
 
 sheet = client.open('yad_2_givataim').sheet1
 
-def set_to_sheet(apartment_set):
+
+def set_to_sheet(apartment_set: set):
+    """
+    takes a set of Apartment objects and send it to google sheets.
+    :param apartment_set: set
+    :return: None
+    """
     lst = sorted(apartment_set, key=lambda x: getattr(x, 'update'), reverse=True)
     sheet.clear()
     sheet.insert_row(['קישור', 'תאריך עדכון', 'רחוב', 'שכונה', 'חדרים', 'קומה ', 'מ"ר', 'מחיר', 'על הנכס', 'שם המוכר', 'טלפון'],1)
-    #sheet.delete_rows(2, sheet.row_count)
-    #app_values = [app.get_all() for app in lst]
     l1 = []
     for i in range(len(lst)):
         l1.append(lst[i].get_all())

@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 import datetime
 from typing import Any
 
+
 @dataclass
 class Apartment:
     link: str
@@ -36,5 +37,8 @@ class Apartment:
         return hash(self.get_all()[1:])
 
     def get_all(self):
+        """
+        returns a tuple containing the apartment's information
+        :return: tuple
+        """
         return self.link, self.update, self.street, self.hood, self.rooms, self.floor, self.square, self.price, self.more_info, self.seller, self.phone
-    
