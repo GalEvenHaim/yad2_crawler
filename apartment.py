@@ -6,7 +6,7 @@ import typing
 @dataclass
 class Apartment:
     link: str
-    update: typing.Union[str, datetime.date]# todo(mor): use typing.Union
+    update: typing.Union[str, datetime.date]
     street: str
     hood: str
     rooms: str
@@ -23,17 +23,17 @@ class Apartment:
         else:
             try:
                 self.update = str(datetime.datetime.strptime(self.update.split()[2].replace('/', '-'), '%d-%m-%Y').date())
-            except:  # todo(mor): specific exception
+            except:
                 self.update = '01-01-2000'
 
     def __eq__(self, other):
         if not isinstance(other, type(self)):
             return False
         return self.street == other.street and self.hood == other.hood \
-               and self.floor == other.floor and self.square == other.square  # todo(mor): why these 4?
+               and self.floor == other.floor and self.square == other.square
 
     def __hash__(self):
-        return hash(self.get_all()[1:]) # todo(mor): why this hash?
+        return hash(self.get_all()[1:])
 
     def get_all(self):
         """
