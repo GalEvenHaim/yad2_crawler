@@ -17,7 +17,7 @@ def get_driver():
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36"
     # Webdriver options:
     op = webdriver.ChromeOptions()
-    #op.add_argument('--headless')
+    op.add_argument('--headless')
     op.add_argument(f'user-agent={user_agent}')
     op.add_argument('window-size=1200x600')
     return webdriver.Chrome(options=op)
@@ -78,7 +78,7 @@ def get_web_elem(func, elem: str, default=''):
         return default
 
 
-def create_single_apartment(item: str) -> None:
+def create_single_apartment(item: str, apartments_set: typing.Set) -> None:
     """
     opens a webdriver at 'https://www.yad2.co.il/item/' + item. crawls the web page
     creates an "Apartment" dataclass and adds it to the apartment_set
@@ -111,19 +111,21 @@ def create_single_apartment(item: str) -> None:
     if update := get_web_elem(driver.find_element_by_class_name, 'top', default="01/01/2000"):
         if update := get_web_elem(update.find_element_by_class_name, 'left', default="01/01/2000"):
             update = update.text
-    apartment_set.add(
+    apartments_set.add(
         Apartment(item, update, street, hood, lst[0].text, lst[1].text, lst[2].text, price, more_info, seller,
                   phone.text))
     driver.close()
 
 
-def start_crawling(url_list: typing.List):
+def start_crawling(url_list: typing.List, workers: int, apartments_set: typing.Set):
     """
     creates threads according to number of WORKERS provided to program.
     sends threads to crawl the apartment web pages.
     :param url_list: list
+    :param workers: int
+    :param apartments_set
     :return: None
     """
-    with concurrent.futures.ThreadPoolExecutor(max_workers=WORKERS) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         for item in url_list:
-            executor.submit(create_single_apartment, item)
+            executor.submit(create_single_apartment, item, apartments_set)
